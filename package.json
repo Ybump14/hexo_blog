@@ -3,9 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "build": "hexo generate && hexo server",
+    "build": "hexo clean && hexo generate && hexo server",
     "clean": "hexo clean",
-    "deploy": "hexo d -g",
+    "deploy": "hexo clean && hexo d -g",
     "server": "hexo server",
     "push": "git add . && git commit -m \"uptade my blog\" && git push"
   },
