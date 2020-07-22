@@ -112,7 +112,7 @@ teststep_dict["validate"].append(
 
 修改为
 
-teststep_dict["validate"]["code"] = entry_json["response"].get("status")
+teststep_dict["validate"]["status"] = entry_json["response"].get("status")
 ```
 
 ```python
