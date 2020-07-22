@@ -40,21 +40,17 @@ pip install allure-pytest
 ---
 
 - 执行脚本
-```python 
+```python
 py.test
 ```
 - 指定–alluredir选项及结果数据保存的目录
 ```
 pytest --alluredir ./result/
 ```
-- 测试数据生成测试报告页面，这一步需要提前安装allure命令行
-[allure命令行安装](https://www.cnblogs.com/ella-li/p/11770129.html)
-
+- 测试数据生成测试报告页面
 ```
 allure generate ./result/ -o ./report/ --clean
 ```
-
-
 
 ---
 
@@ -130,5 +126,70 @@ teststep_dict["validate"].append(
 teststep_dict["validate"][format(key)] = value
 
 ```
+
+```python
+以下代码
+teststep_dict["validate"].append(
+                {"eq": ["headers.Content-Type", headers_mapping["Content-Type"]]}
+            )
+
+修改为
+
+teststep_dict["validate"]["Content-Type"] = headers_mapping["Content-Type"]
+
+```
+
+```python
+找到以下代码
+            if "text" in postData:
+                post_data = postData.get("text")
+            else:
+                params = postData.get("params", [])
+                post_data = utils.convert_list_to_dict(params)
+
+            request_data_key = "data"
+            if not mimeType:
+                pass
+            elif mimeType.startswith("application/json"):
+                try:
+                    post_data = json.loads(post_data)
+                    request_data_key = "json"
+                except JSONDecodeError:
+                    pass
+            elif mimeType.startswith("application/x-www-form-urlencoded"):
+                post_data = utils.convert_x_www_form_urlencoded_to_dict(post_data)
+            else:
+                # TODO: make compatible with more mimeType
+                pass
+替换为
+
+            if "text" in postData:
+                post_data = postData.get("text")
+            else:
+                params = postData.get("params", [])
+                post_data = utils.convert_list_to_dict(params)
+
+            request_data_key = "data"
+            if not mimeType:
+                pass
+            elif mimeType.startswith("application/json"):
+                try:
+                    post_data = json.loads(post_data)
+                except JSONDecodeError:
+                    pass
+            elif mimeType.startswith("application/x-www-form-urlencoded"):
+                post_data = utils.convert_x_www_form_urlencoded_to_dict(post_data)
+            elif mimeType.startswith("text/plain"):
+                try:
+                    post_data = json.loads(post_data)
+                except JSONDecodeError:
+                    pass
+            else:
+                # TODO: make compatible with more mimeType
+                pass
+```
+
+修改源码是方便使用自己习惯的断言，用dict获取字段值比较直接
+另外是har文件转为yml文件时，加多一个判断，当参数结构类型为text/plain，转为json格式
 
 
