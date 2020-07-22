@@ -82,7 +82,7 @@ sys.path.append(os.getcwd())
 ---
 
 
-需要找到har2case包所谓位置，修改core.py文件
+需要找到har2case包所在位置，修改core.py文件
 ```python
 IGNORE_REQUEST_HEADERS中，加入自己需要过滤的头部属性
 ```
@@ -121,7 +121,7 @@ teststep_dict["validate"].append(
                     {"eq": ["content.{}".format(key), value]}
                 )
 
-修改为
+替换为
 
 teststep_dict["validate"][format(key)] = value
 
@@ -133,7 +133,7 @@ teststep_dict["validate"].append(
                 {"eq": ["headers.Content-Type", headers_mapping["Content-Type"]]}
             )
 
-修改为
+替换为
 
 teststep_dict["validate"]["Content-Type"] = headers_mapping["Content-Type"]
 
@@ -189,7 +189,8 @@ teststep_dict["validate"]["Content-Type"] = headers_mapping["Content-Type"]
                 pass
 ```
 
-修改源码是方便使用自己习惯的断言，用dict获取字段值比较直接
-另外是har文件转为yml文件时，加多一个判断，当文件格式为text/plain，将内容转换为json格式
+- 修改源码是方便使用自己习惯的断言，用dict获取字段值比较直接
+
+- 另外是har文件转为yml文件时，加多一个判断，当文件格式为text/plain，将内容转换为json格式
 
 
