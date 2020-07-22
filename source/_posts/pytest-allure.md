@@ -121,7 +121,7 @@ teststep_dict["validate"].append(
                     {"eq": ["content.{}".format(key), value]}
                 )
 
-替换为
+修改为
 
 teststep_dict["validate"][format(key)] = value
 
@@ -133,7 +133,7 @@ teststep_dict["validate"].append(
                 {"eq": ["headers.Content-Type", headers_mapping["Content-Type"]]}
             )
 
-替换为
+修改为
 
 teststep_dict["validate"]["Content-Type"] = headers_mapping["Content-Type"]
 
@@ -141,12 +141,11 @@ teststep_dict["validate"]["Content-Type"] = headers_mapping["Content-Type"]
 
 ```python
 找到以下代码
-            if "text" in postData:
-                post_data = postData.get("text")
-            else:
-                params = postData.get("params", [])
-                post_data = utils.convert_list_to_dict(params)
+        if method in ["POST", "PUT", "PATCH"]:
+            postData = entry_json["request"].get("postData", {})
+            mimeType = postData.get("mimeType")
 
+            # Note that text and params fields are mutually exclusive.
             request_data_key = "data"
             if not mimeType:
                 pass
@@ -162,7 +161,11 @@ teststep_dict["validate"]["Content-Type"] = headers_mapping["Content-Type"]
                 # TODO: make compatible with more mimeType
                 pass
 替换为
+        if method in ["POST", "PUT", "PATCH", "GET"]:
+            postData = entry_json["request"].get("postData", {})
+            mimeType = postData.get("mimeType")
 
+            # Note that text and params fields are mutually exclusive.
             if "text" in postData:
                 post_data = postData.get("text")
             else:
@@ -189,9 +192,10 @@ teststep_dict["validate"]["Content-Type"] = headers_mapping["Content-Type"]
                 pass
 ```
 
-- 修改源码是方便使用自己习惯的断言，用dict获取字段值比较直接
+修改源码是方便使用自己习惯的断言，用dict获取字段值比较直接
+另外是har文件转为yml文件时，加多一个判断，当文件格式为text/plain，将内容转换为json格式
 
-- 另外是har文件转为yml文件时，加多一个判断，当文件格式为text/plain，将内容转换为json格式
+/api/systemValue/getLimitAuthData.json
 
 [项目源码地址](https://github.com/Ybump14/pytest)
 
